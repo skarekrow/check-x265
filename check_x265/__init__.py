@@ -44,8 +44,6 @@ def run(dir):
                     match += "\n"
                     f.write(match)
                 except UnicodeEncodeError:
-                    print("ERROR!")
-                    print(match.encode("utf-8", "surrogateescape"))
                     match = "{}\n".format(match.encode("utf-8", "surrogateescape"))
                     f.write(match)
 
