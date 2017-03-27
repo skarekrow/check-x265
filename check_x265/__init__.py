@@ -1,14 +1,13 @@
-#!/usr/bin/env python3
-# Python 3 version of @steelbox's script at https://github.com/steelbox/check-x265
-import sys
-import glob
-import os
+# Python 3 port of @steelbox's script at https://github.com/steelbox/check-x265
 import fnmatch
-import itertools as it
-import subprocess as su
 import functools
-from pymediainfo import MediaInfo
+import itertools as it
+import os
+import sys
 from datetime import datetime
+
+from pymediainfo import MediaInfo
+
 
 def match_all(dir, match):
     for root_dir, dirnames, filenames in os.walk(dir):
@@ -16,6 +15,7 @@ def match_all(dir, match):
 
         for filename in it.chain(*map(filter_partial, match)):
             yield os.path.join(root_dir, filename)
+
 
 def run(dir):
     matches = []
@@ -29,27 +29,32 @@ def run(dir):
         mediainfo = MediaInfo.parse(file)
 
         try:
-            codec = [x.codec for x in mediainfo.tracks if x.track_type == "Video"][0]
+            codec = [x.codec for x in mediainfo.tracks if x.track_type ==
+                     "Video"][0]
         except IndexError:
             pass
-        
+
         if "HEVC" not in codec:
             matches.append(file)
 
     if matches:
         home = os.environ.get("HOME")
-        with open("{}/x265_report_{}.txt".format(home, date), encoding="utf-8", mode="w") as f:
+        with open("{}/x265_report_{}.txt".format(home, date),
+                  encoding="utf-8", mode="w") as f:
             for match in matches:
                 try:
                     match += "\n"
                     f.write(match)
                 except UnicodeEncodeError:
-                    match = "{}\n".format(match.encode("utf-8", "surrogateescape"))
+                    match = "{}\n".format(match.encode("utf-8",
+                                                       "surrogateescape"))
                     f.write(match)
 
-        print("Your report is ready at: {}/x265_report_{}.txt\n".format(home, date))
+        print("Your report is ready at: {}/x265_report_{}.txt\n".format(home,
+                                                                        date))
     else:
         print("All files found were encoded with x265 (HEVC)")
+
 
 def main():
     if sys.version_info < (3,):
