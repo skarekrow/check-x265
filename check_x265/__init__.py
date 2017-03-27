@@ -61,7 +61,7 @@ def main():
         exit("Please use Python 3")
 
     if len(sys.argv) >= 2:
-        run(sys.argv[1:])
+        run(sys.argv[1])
     else:
         print("Please supply a location to scan.")
         exit("Usage: check-x265 /the/path/to/scan")
